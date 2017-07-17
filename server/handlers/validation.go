@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/alexcesaro/statsd"
-	"github.com/nicholasjackson/building-microservices-in-go/chapter7/server/entities"
-	"github.com/nicholasjackson/building-microservices-in-go/chapter7/server/httputil"
+	"github.com/building-microservices-with-go/chapter7/server/entities"
+	"github.com/building-microservices-with-go/chapter7/server/httputil"
 	"github.com/sirupsen/logrus"
 )
 

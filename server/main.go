@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/alexcesaro/statsd"
-	logstash "github.com/bshuster-repo/logrus-logstash-hook"
-	"github.com/nicholasjackson/building-microservices-in-go/chapter7/server/handlers"
+	"github.com/bshuster-repo/logrus-logstash-hook"
+	"github.com/building-microservices-with-go/chapter7/server/handlers"
 	"github.com/sirupsen/logrus"
 )
 
@@ -62,14 +63,16 @@ func createLogger(address string) (*logrus.Logger, error) {
 
 	// Retry connection to logstash incase the server has not yet come up
 	for ; retryCount < 10; retryCount++ {
-		hook, err := logstash.NewHookWithFields(
-			"tcp",
-			address,
-			"kittenserver",
-			logrus.Fields{"hostname": hostname},
-		)
-
+		conn, err := net.Dial("tcp", address)
 		if err == nil {
+
+			hook := logrustash.New(
+				conn,
+				logrustash.DefaultFormatter(
+					logrus.Fields{"hostname": hostname},
+				),
+			)
+
 			l.Hooks.Add(hook)
 			return l, err
 		}

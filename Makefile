@@ -1,5 +1,6 @@
 get:
-	cd ../ && glide update
+	cd server
+	go get -t -u ./...
 
 buildserver:
 	echo "Build API"
