@@ -34,7 +34,7 @@ func main() {
 }
 
 func setupHandlers(statsd *statsd.Client, logger *logrus.Logger) {
-	handler := handlers.NewValidationHandler(
+	validation := handlers.NewValidationHandler(
 		statsd,
 		logger,
 		handlers.NewHelloWorldHandler(statsd, logger),
@@ -46,8 +46,8 @@ func setupHandlers(statsd *statsd.Client, logger *logrus.Logger) {
 		handlers.NewBangHandler(),
 	)
 
-	http.Handle("/helloworld", handler)
-	http.Handle("/bang", bangHandler)
+	http.Handle("/helloworld", handlers.NewCorrelationHandler(validation))
+	http.Handle("/bang", handlers.NewCorrelationHandler(bangHandler))
 }
 
 func createStatsDClient(address string) (*statsd.Client, error) {
@@ -81,5 +81,6 @@ func createLogger(address string) (*logrus.Logger, error) {
 		time.Sleep(1 * time.Second)
 	}
 
+	log.Fatal("Unable to connect to logstash")
 	return nil, err
 }
